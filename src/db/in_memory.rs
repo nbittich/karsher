@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-pub const DEFAULT_TREE: &str = "__karsher_default";
+pub const DEFAULT_TREE: &str = "__adana_default";
 
 use super::{tree::Tree, DbOp, Key, Op, Value};
 

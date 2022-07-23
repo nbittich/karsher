@@ -1,0 +1,6 @@
+include("./init.adana")
+include("./deep/deep.adana")
+bfr = 2
+println(arr)
+println(arr2)
+println(x)

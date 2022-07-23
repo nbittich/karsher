@@ -5,7 +5,12 @@ mod primitive;
 
 pub use compute::compute;
 pub use primitive::Primitive;
+use serde::{Deserialize, Serialize};
 use strum::EnumCount;
+
+use self::constants::{
+    ABS, COS, INCLUDE, LENGTH, LN, LOG, PRINT, PRINT_LN, SIN, SQRT, TAN,
+};
 
 #[macro_use]
 pub mod constants {
@@ -71,14 +76,22 @@ impl MathConstants {
     }
 }
 
-#[derive(Debug, PartialEq, Clone)]
-pub(super) enum Value {
+#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+pub enum Value {
     Expression(Vec<Value>),
     Operation(Operator),
     BuiltInFunction {
         fn_type: BuiltInFunctionType,
         expr: Box<Value>,
     },
+    Function {
+        parameters: Box<Value>,
+        exprs: Vec<Value>,
+    },
+    // FunctionCall {
+    //    name: Block<Value>,
+    //    parameters: Vec<Value>,
+    //}
     Decimal(f64),
     Integer(i128),
     Bool(bool),
@@ -106,8 +119,8 @@ pub(super) enum Value {
         index: Box<Value>,
     },
 }
-#[derive(Debug, Copy, Clone, PartialEq)]
-pub(super) enum BuiltInFunctionType {
+#[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
+pub enum BuiltInFunctionType {
     Sqrt,
     Abs,
     Log,
@@ -121,8 +134,8 @@ pub(super) enum BuiltInFunctionType {
     Include,
 }
 
-#[derive(Debug, PartialEq, Copy, Clone)]
-pub(super) enum Operator {
+#[derive(Debug, PartialEq, Copy, Clone, Serialize, Deserialize)]
+pub enum Operator {
     Add,
     Subtr,
     Mult,
@@ -151,6 +164,46 @@ pub(super) enum TreeNodeValue {
     WhileExpr(Value),
     Array(Vec<Value>),
     ArrayAccess { index: Primitive, array: Value },
+    Function(Value),
+}
+
+impl BuiltInFunctionType {
+    pub(super) fn as_str(&self) -> &'static str {
+        match self {
+            BuiltInFunctionType::Sqrt => SQRT,
+            BuiltInFunctionType::Abs => ABS,
+            BuiltInFunctionType::Log => LOG,
+            BuiltInFunctionType::Ln => LN,
+            BuiltInFunctionType::Length => LENGTH,
+            BuiltInFunctionType::Sin => SIN,
+            BuiltInFunctionType::Cos => COS,
+            BuiltInFunctionType::Tan => TAN,
+            BuiltInFunctionType::Println => PRINT_LN,
+            BuiltInFunctionType::Print => PRINT,
+            BuiltInFunctionType::Include => INCLUDE,
+        }
+    }
+}
+impl Operator {
+    pub(super) fn as_str(&self) -> &'static str {
+        match self {
+            Operator::Add => "+",
+            Operator::Subtr => "-",
+            Operator::Div => "/",
+            Operator::Mult => "*",
+            Operator::Pow => "^",
+            Operator::Not => "!",
+            Operator::Mod => "%",
+            Operator::Less => "<",
+            Operator::Greater => ">",
+            Operator::LessOrEqual => "<=",
+            Operator::GreaterOrEqual => ">=",
+            Operator::Equal => "==",
+            Operator::NotEqual => "!=",
+            Operator::And => "&&",
+            Operator::Or => "||",
+        }
+    }
 }
 
 #[cfg(test)]

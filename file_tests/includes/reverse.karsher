@@ -1,6 +1,0 @@
-include("./init.karsher")
-include("./deep/deep.karsher")
-bfr = 2
-println(arr)
-println(arr2)
-println(x)

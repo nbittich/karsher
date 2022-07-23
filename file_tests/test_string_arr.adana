@@ -1,0 +1,27 @@
+v = "eodrnin"
+count = 0
+# we can iterate over a string
+while(count < length(v)) {
+    println(v[count])
+    count = count + 1
+}
+
+copy = v
+
+v[0] = copy[6]
+v[2] = copy[3]
+v[3] = copy[2]
+v[4] = copy[5]
+v[5] = copy[6]
+v[6] = copy[0]
+
+i = 0
+
+s = ""
+
+while(i < length("kekeke")) {
+    s = s + "kekeke"[i]
+    i = i +1
+}
+
+v

@@ -1,4 +1,5 @@
 use std::{
+    borrow::Borrow,
     fs::read_to_string,
     ops::{Neg, Not},
     path::{Path, PathBuf},
@@ -7,7 +8,7 @@ use std::{
 use anyhow::{Context, Error};
 use slab_tree::{NodeRef, Tree};
 
-use crate::{karshscript::parser::parse_instructions, prelude::BTreeMap};
+use crate::{adana_script::parser::parse_instructions, prelude::BTreeMap};
 
 use super::{
     ast::to_ast,
@@ -164,7 +165,7 @@ fn compute_recur(
                 Ok(Primitive::Bool(*b))
             }
             TreeNodeValue::Primitive(Primitive::Error(err)) => {
-                Err(Error::msg(*err))
+                Err(Error::msg(err.clone()))
             }
             TreeNodeValue::Primitive(p) => Ok(p.clone()),
             TreeNodeValue::VariableAssign(name) => {
@@ -219,7 +220,9 @@ fn compute_recur(
                             std::env::set_current_dir(curr_path)?; // todo this might be quiet fragile
                             res
                         }
-                        _ => Ok(Primitive::Error("wrong include statement")),
+                        _ => Ok(Primitive::Error(
+                            "wrong include statement".to_string(),
+                        )),
                     },
                 }
             }
@@ -237,7 +240,7 @@ fn compute_recur(
                         v @ Primitive::Error(_) => return Ok(v),
                         Primitive::Unit => {
                             return Ok(Primitive::Error(
-                                "cannot push unit () to array",
+                                "cannot push unit () to array".to_string(),
                             ))
                         }
                         _ => primitives.push(primitive),
@@ -249,24 +252,23 @@ fn compute_recur(
                 let error_message = || {
                     format!("illegal index {index} for array access {array:?}")
                 };
-                match array {
-                    Value::Variable(v) => {
+                match (array, index) {
+                    (Value::Variable(v), index) => {
                         let array =
                             ctx.get(v).context("array not found in context")?;
-                        Ok(array.index_at(index.clone()))
+                        Ok(array.index_at(index))
                     }
-                    Value::Array(array) => {
-                        if let Primitive::Int(index) = index {
-                            let index = *index as usize;
-                            let value =
-                                array.get(index).context(error_message())?;
-                            if index < array.len() {
-                                let primitive = compute_instructions(
-                                    vec![value.clone()],
-                                    ctx,
-                                )?;
-                                return Ok(primitive);
-                            }
+                    (Value::String(v), index) => {
+                        let v = Primitive::String(v.clone());
+                        Ok(v.index_at(index))
+                    }
+                    (Value::Array(array), Primitive::Int(index)) => {
+                        let index = *index as usize;
+                        let value = array.get(index).context(error_message())?;
+                        if index < array.len() {
+                            let primitive =
+                                compute_instructions(vec![value.clone()], ctx)?;
+                            return Ok(primitive);
                         }
                         Err(anyhow::Error::msg(error_message()))
                     }
@@ -278,6 +280,33 @@ fn compute_recur(
                 let array =
                     ctx.get_mut(name).context("array not found in context")?;
                 Ok(array.swap_mem(&mut v, index))
+            }
+            TreeNodeValue::Function(Value::Function { parameters, exprs }) => {
+                if let Value::BlockParen(parameters) = parameters.borrow() {
+                    let mut params = Vec::with_capacity(parameters.len());
+                    for parameter in parameters {
+                        if let Value::Variable(parameter) = parameter {
+                            params.push(parameter.clone());
+                        } else {
+                            return Ok(Primitive::Error(format!(
+                                "not a valid parameter: {parameter:?}"
+                            )));
+                        }
+                    }
+                    Ok(Primitive::Function {
+                        parameters: params,
+                        exprs: exprs.to_owned(),
+                    })
+                } else {
+                    return Ok(Primitive::Error(format!(
+                        "not a valid function: {parameters:?}, {exprs:?}"
+                    )));
+                }
+            }
+            TreeNodeValue::Function(v) => {
+                return Ok(Primitive::Error(format!(
+                    "unexpected function declaration: {v:?}"
+                )));
             }
         }
     } else {
@@ -366,7 +395,10 @@ pub fn compute(
         dbg!(rest);
         dbg!(&instructions);
     }
-    anyhow::ensure!(rest.trim().is_empty(), "Invalid operation!");
+    anyhow::ensure!(
+        rest.trim().is_empty(),
+        format!("Invalid operation! {instructions:?} => {rest}")
+    );
 
     compute_instructions(instructions, ctx)
 }

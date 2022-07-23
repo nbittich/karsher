@@ -1,4 +1,0 @@
-include("../init2.karsher")
-n = 13
-println(include("../../testfib.karsher"))
-x= 4

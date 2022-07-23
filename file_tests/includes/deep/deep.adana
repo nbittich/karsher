@@ -1,0 +1,4 @@
+include("../init2.adana")
+n = 13
+println(include("../../testfib.adana"))
+x= 4

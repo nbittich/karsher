@@ -1,10 +1,10 @@
 use std::collections::BTreeMap;
 
-use crate::karshscript::{
+use crate::adana_script::{
     parser::parse_instructions as parse_var_expr, Operator::*, Value,
 };
 
-use crate::karshscript::{compute, Primitive};
+use crate::adana_script::{compute, Primitive};
 
 #[test]
 #[should_panic(expected = "invalid expression!")]

@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'karsher'",
+            "name": "Debug executable 'adana'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=karsher",
-                    "--package=karsher"
+                    "--bin=adana",
+                    "--package=adana"
                 ],
                 "filter": {
-                    "name": "karsher",
+                    "name": "adana",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'karsher'",
+            "name": "Debug unit tests in executable 'adana'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=karsher",
-                    "--package=karsher"
+                    "--bin=adana",
+                    "--package=adana"
                 ],
                 "filter": {
-                    "name": "karsher",
+                    "name": "adana",
                     "kind": "bin"
                 }
             },

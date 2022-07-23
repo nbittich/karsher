@@ -3,8 +3,8 @@ use std::{collections::BTreeMap, path::Path};
 use nom::error::ErrorKind;
 
 use crate::{
+    adana_script::Primitive,
     db::DbOp,
-    karshscript::Primitive,
     prelude::colors::*,
     reserved_keywords::{check_reserved_keyword, CACHE_COMMAND_DOC},
 };
@@ -14,7 +14,7 @@ use super::{
     CacheCommand,
 };
 
-const BACKUP_FILE_NAME: &str = "karsherdb.json";
+const BACKUP_FILE_NAME: &str = "adanadb.json";
 
 pub fn process_command(
     db: &mut impl DbOp<String, String>,

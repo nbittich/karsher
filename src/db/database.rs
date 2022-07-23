@@ -10,11 +10,11 @@ use super::{FileDb, FileLock, InMemoryDb, Key, Value};
 fn get_default_db_path() -> Option<Box<Path>> {
     let mut db_dir = dirs::data_dir()?;
     debug!("db dir: {}", db_dir.as_path().to_string_lossy());
-    db_dir.push(".karsherdb");
+    db_dir.push(".adanadb");
     if !db_dir.exists() {
         std::fs::create_dir(&db_dir).ok()?;
     }
-    db_dir.push("karsher.db");
+    db_dir.push("adana.db");
 
     println!("Db Path: {}", db_dir.to_string_lossy());
 
@@ -138,11 +138,10 @@ mod test {
 
     #[test]
     fn test_file_db_lock() {
-        let _ = File::create("/tmp/karsher.db"); // reset the file
+        let _ = File::create("/tmp/adana.db"); // reset the file
 
         let file_db: Db<u64, String> =
-            Db::open(Config::new(Some("/tmp/karsher.db"), false, false))
-                .unwrap();
+            Db::open(Config::new(Some("/tmp/adana.db"), false, false)).unwrap();
 
         let mut file_db = if let Db::FileBased(file_db) = file_db {
             file_db
@@ -160,8 +159,7 @@ mod test {
         drop(file_db); // force destroying the object to flush db
 
         let file_db: Db<u64, String> =
-            Db::open(Config::new(Some("/tmp/karsher.db"), false, false))
-                .unwrap();
+            Db::open(Config::new(Some("/tmp/adana.db"), false, false)).unwrap();
 
         let mut file_db = if let Db::FileBased(file_db) = file_db {
             file_db

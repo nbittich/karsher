@@ -305,5 +305,12 @@ pub(super) fn to_ast(
                 )))
             }
         },
+        f @ Value::Function { parameters: _, exprs: _ } => {
+            append_to_current_and_return(
+                TreeNodeValue::Function(f),
+                tree,
+                curr_node_id,
+            )
+        }
     }
 }

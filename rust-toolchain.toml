@@ -1,4 +1,4 @@
 [toolchain]
 channel = "stable"
-host = "1.62.0"
+host = "1.62.1"
 targets = [ "x86_64-unknown-linux-musl" ]

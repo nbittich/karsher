@@ -7,5 +7,6 @@ then
   exit 1;
 fi
 
+mkdir -p dist/musl
 cargo build --release 
-cp target/x86_64-unknown-linux-musl/release/karsher dist/musl/karsher-$1
+cp target/x86_64-unknown-linux-musl/release/adana dist/musl/adana-$1

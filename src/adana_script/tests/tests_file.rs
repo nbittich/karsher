@@ -2,13 +2,13 @@ use std::collections::BTreeMap;
 
 use serial_test::serial;
 
-use crate::karshscript::{compute, Primitive};
+use crate::adana_script::{compute, Primitive};
 
 #[test]
 #[serial]
 fn test_simple_file() {
     let file_path = r#"
-    include("file_tests/test1.karsher")
+    include("file_tests/test1.adana")
     "#;
     let mut ctx = BTreeMap::new();
     let r = compute(file_path, &mut ctx).unwrap();
@@ -28,7 +28,7 @@ fn test_simple_file() {
 #[serial]
 fn test_if_statement() {
     let file_path = r#"
-    include("file_tests/test2.karsher")
+    include("file_tests/test2.adana")
     "#;
     let mut ctx = BTreeMap::new();
     let r = compute(file_path, &mut ctx).unwrap();
@@ -49,7 +49,7 @@ fn test_if_statement() {
 #[serial]
 fn test_while_statement() {
     let file_path = r#"
-    include("file_tests/testfib.karsher")
+    include("file_tests/testfib.adana")
     "#;
     let mut ctx = BTreeMap::new();
 
@@ -87,7 +87,7 @@ fn test_while_statement() {
 #[serial]
 fn test_nested_file() {
     let file_path = r#"
-    include("file_tests/test_nested.karsher")
+    include("file_tests/test_nested.adana")
     "#;
     let mut ctx = BTreeMap::new();
     let r = compute(file_path, &mut ctx).unwrap();
@@ -109,7 +109,7 @@ fn test_nested_file() {
 #[serial]
 fn test_fizz_buzz() {
     let file_path = r#"
-    include("file_tests/test_fizzbuzz.karsher")
+    include("file_tests/test_fizzbuzz.adana")
     "#;
     let mut ctx = BTreeMap::new();
     let _ = compute(file_path, &mut ctx);
@@ -125,7 +125,7 @@ fn test_fizz_buzz() {
 fn test_includes() {
     let mut ctx = BTreeMap::new();
     let file_path = r#"
-    include("file_tests/includes/reverse.karsher")
+    include("file_tests/includes/reverse.adana")
 "#;
     let _ = compute(file_path, &mut ctx).unwrap();
     dbg!("wesh", &ctx);
@@ -162,7 +162,7 @@ fn test_includes() {
 #[serial]
 fn test_multiline_file() {
     let file_path = r#"
-    include("file_tests/test_multiline.karsher")
+    include("file_tests/test_multiline.adana")
 "#;
     let mut ctx = BTreeMap::new();
     let _ = compute(file_path, &mut ctx);
@@ -187,7 +187,7 @@ fn test_multiline_file() {
 #[serial]
 fn test_if_else_file() {
     let file_path = r#"
-    include("file_tests/test_if_else.karsher")
+    include("file_tests/test_if_else.adana")
 "#;
     let mut ctx = BTreeMap::new();
     ctx.insert("count".to_string(), Primitive::Int(102));
@@ -197,7 +197,7 @@ fn test_if_else_file() {
     let _ = compute(file_path, &mut ctx);
     assert_eq!(ctx.get("count"), Some(&Primitive::Int(51)));
     let file_path = r#"
-    include("file_tests/test_fizzbuzz_else.karsher")
+    include("file_tests/test_fizzbuzz_else.adana")
 "#;
     let mut ctx = BTreeMap::new();
     let _ = compute(file_path, &mut ctx);

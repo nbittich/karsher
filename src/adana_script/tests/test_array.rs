@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use serial_test::serial;
 
-use crate::karshscript::{
+use crate::adana_script::{
     compute,
     primitive::{
         Array as Arr,
@@ -14,7 +14,7 @@ use crate::karshscript::{
 #[serial]
 fn test_simple_array() {
     let file_path = r#"
-        include("file_tests/test_simple_array.karsher")
+        include("file_tests/test_simple_array.adana")
     "#;
     let mut ctx = BTreeMap::new();
     let _ = compute(file_path, &mut ctx).unwrap();
@@ -64,7 +64,7 @@ fn test_simple_array() {
 #[serial]
 fn test_file_array() {
     let file_path = r#"
-    include("file_tests/test_array.karsher")
+    include("file_tests/test_array.adana")
     "#;
     let mut ctx = BTreeMap::new();
     let _ = compute(file_path, &mut ctx).unwrap();
@@ -127,4 +127,24 @@ fn test_file_array() {
     let res = compute("arr[2]", &mut ctx).unwrap();
 
     assert_eq!(Str("bababa".to_string()), res)
+}
+
+#[test]
+#[serial]
+fn test_string_array() {
+    let file_path = r#"
+        include("file_tests/test_string_arr.adana")
+    "#;
+    let mut ctx = BTreeMap::new();
+    let _ = compute(file_path, &mut ctx).unwrap();
+    assert_eq!(
+        &BTreeMap::from([
+            ("v".to_string(), Str("nordine".to_string())),
+            ("copy".to_string(), Str("eodrnin".to_string())),
+            ("s".to_string(), Str("kekeke".to_string())),
+            ("count".to_string(), Int(7)),
+            ("i".to_string(), Int(6)),
+        ]),
+        &ctx
+    );
 }
